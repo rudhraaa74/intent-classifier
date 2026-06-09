@@ -2,7 +2,7 @@
 
 This project implements a custom **Bidirectional LSTM** from scratch in PyTorch to classify natural language text into 7 distinct intents using the popular SNIPS dataset.
 
-## 🚀 What We Did
+## What We Did
 
 1. **Preprocessing & Tokenization**: We built a custom NLP pipeline (`src/preprocess.py`) to clean, tokenize, and encode text. We limited the vocabulary to the top 4,000 most frequent words and aggressively truncated/padded sequences to a maximum length of 16 tokens.
 2. **Dataset & Dataloaders**: We implemented custom PyTorch `Dataset` classes (`src/dataset.py`) to efficiently batch the data for GPU/CPU processing.
@@ -10,12 +10,12 @@ This project implements a custom **Bidirectional LSTM** from scratch in PyTorch 
 4. **Training**: We trained a baseline Unidirectional LSTM, which achieved 98.00% validation accuracy. We then successfully beat it by training a **Bidirectional LSTM** that reached **98.43%**.
 5. **Evaluation & Inference**: We analyzed the results via confusion matrices (`notebooks/03_results_analysis.ipynb`) and built a real-time standalone inference CLI (`src/predict.py`).
 
-## 📊 Performance
+## Performance
 The final Champion model achieved a **98.43% Validation Accuracy** on the unseen test set!
 
 ![Confusion Matrix](assets/confusion_matrix.png)
 
-## 📂 Project Structure
+## Project Structure
 
 - **`data/`**: Raw JSON data from SNIPS, alongside the processed vocabulary and label maps.
 - **`src/`**: Pure Python source code (`preprocess.py`, `dataset.py`, `model.py`, `predict.py`).
@@ -40,7 +40,7 @@ The final Champion model achieved a **98.43% Validation Accuracy** on the unseen
 
 ---
 
-## ⚠️ Reflections & Failure Modes
+## Reflections & Failure Modes
 
 Even with 98.43% accuracy, the model exhibits specific failure modes common to recurrent architectures:
 
@@ -49,7 +49,7 @@ Even with 98.43% accuracy, the model exhibits specific failure modes common to r
 - **Out-of-Vocabulary (OOV):** Any word not in our top-4000 vocabulary (like misspelled cities or obscure song titles) becomes an `<UNK>` token, completely stripping it of semantic meaning.
 - **Word Order Sensitivity:** While LSTMs respect word order, they can sometimes hyper-fixate on strong keyword signals toward the end of a sentence while forgetting the beginning context.
 
-## 🌉 The Bridge to Transformers (Future Work)
+## The Bridge to Transformers (Future Work)
 
 To overcome the inherent limitations of our custom LSTM, the natural next step is to upgrade to a **Transformer-based architecture** (such as BERT or RoBERTa). Here is exactly how a Transformer solves the LSTM's bottlenecks:
 
