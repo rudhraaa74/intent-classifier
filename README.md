@@ -2,57 +2,63 @@
 
 This project implements a custom **Bidirectional LSTM** from scratch in PyTorch to classify natural language text into 7 distinct intents using the popular SNIPS dataset.
 
-## 🚀 Performance
-The final Bidirectional LSTM model achieved an impressive **98.43% Validation Accuracy** on the unseen test set!
+## 🚀 What We Did
+
+1. **Preprocessing & Tokenization**: We built a custom NLP pipeline (`src/preprocess.py`) to clean, tokenize, and encode text. We limited the vocabulary to the top 4,000 most frequent words and aggressively truncated/padded sequences to a maximum length of 16 tokens.
+2. **Dataset & Dataloaders**: We implemented custom PyTorch `Dataset` classes (`src/dataset.py`) to efficiently batch the data for GPU/CPU processing.
+3. **Model Architecture**: We designed an `IntentClassifier` (`src/model.py`) featuring an Embedding layer, a toggleable Bidirectional LSTM layer, and a fully connected linear classification head.
+4. **Training**: We trained a baseline Unidirectional LSTM, which achieved 98.00% validation accuracy. We then successfully beat it by training a **Bidirectional LSTM** that reached **98.43%**.
+5. **Evaluation & Inference**: We analyzed the results via confusion matrices (`notebooks/03_results_analysis.ipynb`) and built a real-time standalone inference CLI (`src/predict.py`).
+
+## 📊 Performance
+The final Champion model achieved a **98.43% Validation Accuracy** on the unseen test set!
 
 ![Confusion Matrix](assets/confusion_matrix.png)
 
 ## 📂 Project Structure
 
-Following strict separation of concerns, the project is structured as follows:
-
 - **`data/`**: Raw JSON data from SNIPS, alongside the processed vocabulary and label maps.
-- **`src/`**: Pure, finalized Python source code. This includes the preprocessing pipeline (`preprocess.py`), PyTorch DataLoader generation (`dataset.py`), and the model architecture (`model.py`).
-- **`notebooks/`**: Interactive execution environments. Training, evaluation, and inference all live here so the outputs are documented and visually verifiable.
-- **`experiments/`**: Every distinct hyperparameter configuration gets its own isolated folder to prevent data loss. The champion run is `exp_002_bidirectional`.
-- **`models/`**: The saved `best_model.pt` PyTorch weights.
+- **`src/`**: Pure Python source code (`preprocess.py`, `dataset.py`, `model.py`, `predict.py`).
+- **`notebooks/`**: Interactive execution environments for exploration, training, and evaluation.
+- **`experiments/`**: Isolated experiment tracking. The champion run is `exp_002_bidirectional`.
+- **`models/`**: The saved PyTorch weights (`best_model.pt`).
 
 ## 🏃 How to Run
 
-1. **Setup your environment:**
+1. **Setup environment:**
    ```bash
    python3 -m venv venv
    source venv/bin/activate
    pip install -r requirements.txt
    ```
 
-2. **Explore the data:**
-   Open `notebooks/01_exploration.ipynb` to see the dataset distribution.
-
-3. **Train the model:**
-   Open `notebooks/02_training.ipynb` and run all cells. This handles data loading, model initialization, and the training loop with Early Stopping and a Learning Rate Scheduler.
-
-4. **Evaluate:**
-   Open `notebooks/03_results_analysis.ipynb` to generate the classification report and confusion matrix.
-
-5. **Test it yourself!**
-   Open `notebooks/04_inference.ipynb` and run the interactive loop. You can type any custom sentence to see the live intent prediction!
+2. **Interactive Inference CLI:**
+   Test the model's live predictions directly in your terminal:
+   ```bash
+   python3 src/predict.py
+   ```
 
 ---
 
-## ⚠️ Limitations
+## ⚠️ Reflections & Failure Modes
 
-While the Bidirectional LSTM achieved fantastic accuracy on SNIPS, the architecture does have inherent limitations:
+Even with 98.43% accuracy, the model exhibits specific failure modes common to recurrent architectures:
 
-1. **Context Length Constraint:** LSTMs struggle to maintain context over very long sequences due to the bottleneck of squishing all sequence history into a single hidden state vector. We mitigated this by setting a strict `max_seq_len` of 16, but this means long inputs are aggressively truncated.
-2. **Sequential Processing:** Because LSTMs process tokens one-by-one, they cannot easily parallelize training across GPUs like modern architectures.
-3. **Out-of-Vocabulary Tokens:** We capped our vocabulary at 4,000 words. Any word outside of this (like a rare name or misspelled city) is immediately replaced with `<UNK>`, stripping it of all semantic meaning.
+- **Sequence Length Drops:** Accuracy drops sharply on very long or complex sentences because we strictly pad/truncate sequences to a maximum length of `16`. 
+- **Word Pair Confusion:** The model can occasionally get confused by words that appear across multiple intents. For instance, the word "book" is heavily associated with `BookRestaurant`, but if a user says "I want to read a book", the model may misclassify it if the surrounding context isn't strong enough.
+- **Out-of-Vocabulary (OOV):** Any word not in our top-4000 vocabulary (like misspelled cities or obscure song titles) becomes an `<UNK>` token, completely stripping it of semantic meaning.
+- **Word Order Sensitivity:** While LSTMs respect word order, they can sometimes hyper-fixate on strong keyword signals toward the end of a sentence while forgetting the beginning context.
 
-## 🌉 The Transformer Bridge (Future Work)
+## 🌉 The Bridge to Transformers (Future Work)
 
-To overcome the limitations above, the natural next step for this project would be to bridge over to a **Transformer-based architecture** (such as BERT or RoBERTa). 
+To overcome the inherent limitations of our custom LSTM, the natural next step is to upgrade to a **Transformer-based architecture** (such as BERT or RoBERTa). Here is exactly how a Transformer solves the LSTM's bottlenecks:
 
-Instead of training word embeddings from scratch on a tiny dataset, we could:
-1. **Leverage Pre-trained Context:** Replace the custom `<UNK>`-prone `word2idx` vocabulary with a pre-trained subword tokenizer (like WordPiece).
-2. **Global Attention:** Replace the LSTM layers with Self-Attention layers, allowing the model to look at the entire sequence simultaneously without the context degradation over time.
-3. **Fine-Tuning:** By loading a pre-trained `distilbert-base-uncased` model and slapping a simple Linear classification head on top, we could likely match or exceed this 98% accuracy while being highly robust to misspellings and complex sentence structures!
+| LSTM Limitation | Transformer Solution |
+|---|---|
+| Processes tokens sequentially, slow to train | Processes all tokens in parallel |
+| Long-range dependencies can fade over time | Attention directly connects any two tokens, regardless of distance |
+| Final hidden state is an information bottleneck | Attention is computed over all positions simultaneously, not just the last |
+| No pre-trained language understanding (starts from scratch) | Pre-trained on massive internet corpora (BERT, GPT) for deep semantic understanding |
+| Susceptible to Out-of-Vocabulary `<UNK>` tokens | Uses Subword Tokenization (e.g., WordPiece) to break down rare words into known subwords |
+
+By fine-tuning a pre-trained `distilbert-base-uncased` model, we could easily match or exceed our current accuracy while massively improving robustness to typos, sequence lengths, and complex contexts!
