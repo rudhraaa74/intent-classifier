@@ -30,7 +30,7 @@ config = {
   "embed_dim": 128,
   "hidden_size": 256,
   "num_layers": 1,
-  "bidirectional": False,
+  "bidirectional": True,
   "dropout": 0.3,
   "batch_size": 32,
   "learning_rate": 0.001,
@@ -49,7 +49,7 @@ config["vocab_size"] = metadata["vocab_size"]
 config["max_seq_len"] = metadata["max_seq_len"]
 
 # Save config
-exp_dir = "../experiments/exp_001_baseline"
+exp_dir = "../experiments/exp_002_bidirectional"
 os.makedirs(exp_dir, exist_ok=True)
 with open(os.path.join(exp_dir, "config.json"), "w") as f:
     json.dump(config, f, indent=2)
@@ -223,6 +223,6 @@ nb['cells'] = [
 ]
 
 os.makedirs("notebooks", exist_ok=True)
-with open('notebooks/02_training.ipynb', 'w') as f:
+with open('notebooks/02_training_bidirectional.ipynb', 'w') as f:
     nbf.write(nb, f)
 print("Notebook generated!")

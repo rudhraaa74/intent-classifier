@@ -1,0 +1,14 @@
+{
+  "seed": 42,
+  "embed_dim": 128,
+  "hidden_size": 256,
+  "num_layers": 1,
+  "bidirectional": true,
+  "dropout": 0.3,
+  "batch_size": 32,
+  "learning_rate": 0.001,
+  "max_epochs": 30,
+  "early_stopping_patience": 5,
+  "vocab_size": 4000,
+  "max_seq_len": 16
+}
