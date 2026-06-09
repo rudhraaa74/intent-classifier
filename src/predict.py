@@ -91,7 +91,8 @@ if __name__ == "__main__":
                 
             result = predictor.predict(sentence)
             print(f"Intent:     {result['intent']}")
-            print(f"Confidence: {result['confidence'] * 100:.2f}%\\n")
+            print(f"Confidence: {result['confidence'] * 100:.2f}%")
+            print("") # Newline for spacing
             
     except KeyboardInterrupt:
-        print("\\nExiting. Have a great day!")
+        print("\nExiting. Have a great day!")
