@@ -95,14 +95,13 @@ intent-classifier/
 ├── src/                         ← finalized, verified source code only
 │   ├── preprocess.py
 │   ├── dataset.py
-│   ├── model.py
-│   ├── train.py
-│   ├── evaluate.py
-│   └── predict.py
+│   └── model.py
 │
-├── notebooks/                   ← exploration and results analysis only
+├── notebooks/                   ← Core execution and documentation
 │   ├── 01_exploration.ipynb
-│   └── 02_results_analysis.ipynb
+│   ├── 02_training.ipynb
+│   ├── 03_results_analysis.ipynb
+│   └── 04_inference.ipynb
 │
 ├── experiments/                 ← one subfolder per training run
 │   └── exp_001_baseline/
@@ -135,7 +134,7 @@ intent-classifier/
 
 **`src/`** — Code that has been tested and verified against a phase checklist. A file moves here from `temp/` only once it's confirmed working. Notebooks may import from `src/`, never the reverse.
 
-**`notebooks/`** — EDA and visualization only. No model definitions, no training loops, no preprocessing logic. All of that lives in `src/` and gets imported.
+**`notebooks/`** — Core execution and documentation. Model definitions and preprocessing components go in `src/`, but training loops, evaluations, and interactive predictions should be housed in notebooks so the process is documented and visibly verifiable.
 
 **`experiments/`** — Every distinct hyperparameter configuration gets its own numbered folder. Never overwrite a previous experiment. This is how you compare runs later.
 

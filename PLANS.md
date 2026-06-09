@@ -29,13 +29,13 @@ intent-classifier/
 ├── src/
 │   ├── preprocess.py
 │   ├── dataset.py
-│   ├── model.py
-│   ├── train.py
-│   ├── evaluate.py
-│   └── predict.py
+│   └── model.py
 ├── checkpoints/            ← saved model weights go here
 ├── notebooks/
-│   └── 01_exploration.ipynb
+│   ├── 01_exploration.ipynb
+│   ├── 02_training.ipynb
+│   ├── 03_results_analysis.ipynb
+│   └── 04_inference.ipynb
 ├── requirements.txt
 └── README.md
 ```
@@ -413,7 +413,7 @@ validation monitoring, learning rate scheduling, and checkpointing.
 
 ### What will be done
 
-All work in this phase lives in `src/train.py`.
+All work in this phase lives in `notebooks/02_training.ipynb`.
 
 **Hyperparameters (locked in before training starts):**
 
@@ -515,7 +515,7 @@ confusion matrix.
 
 ### What will be done
 
-All work in this phase lives in `src/evaluate.py`.
+All work in this phase lives in `notebooks/03_results_analysis.ipynb`.
 
 **Step 1 — Load best checkpoint**
 
@@ -584,7 +584,7 @@ interactive chatbot loop for demonstration.
 
 ### What will be done
 
-All work in this phase lives in `src/predict.py`.
+All work in this phase lives in `notebooks/04_inference.ipynb`.
 
 **Step 1 — `predict(sentence)` function**
 
@@ -694,9 +694,9 @@ the LSTM's limitations to transformer design choices:
 | 2 — Preprocessing | `src/preprocess.py` | `word2idx`, `idx2label`, encoder functions | ✅ Yes |
 | 3 — Dataset | `src/dataset.py` | DataLoaders with correct tensor shapes | ✅ Yes |
 | 4 — Model | `src/model.py` | Model passing forward pass smoke test | ✅ Yes |
-| 5 — Training | `src/train.py` | `best_model.pt` + training curves | ✅ Yes |
-| 6 — Evaluation | `src/evaluate.py` | Accuracy, F1, confusion matrix | ✅ Yes |
-| 7 — Inference | `src/predict.py` | Working chatbot loop | ✅ Yes |
+| 5 — Training | `notebooks/02_training.ipynb` | `best_model.pt` + training curves | ✅ Yes |
+| 6 — Evaluation | `notebooks/03_results_analysis.ipynb` | Accuracy, F1, confusion matrix | ✅ Yes |
+| 7 — Inference | `notebooks/04_inference.ipynb` | Working chatbot loop | ✅ Yes |
 | 8 — Reflection | `README.md` | Documented limitations + transformer bridge | ✅ Yes |
 
 ---
