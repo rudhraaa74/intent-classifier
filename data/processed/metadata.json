@@ -1,0 +1,4 @@
+{
+  "max_seq_len": 16,
+  "vocab_size": 4000
+}
